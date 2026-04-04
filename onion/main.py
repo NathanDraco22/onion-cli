@@ -103,3 +103,7 @@ def router(
 
     for folder in Mediator().output_folders:
         print(f"[yellow]{folder}[/yellow]")
+
+
+if __name__ == "__main__":
+    app()

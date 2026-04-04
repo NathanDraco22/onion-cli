@@ -54,7 +54,6 @@ from repos.v${version}.${plural_name} import (
     Update${Name}, 
     ${Name}InDb, 
     ${Name_plural}Repository,
-    ${Name_plural}DataSource,
 )
 
 
@@ -97,9 +96,7 @@ class ${Name_plural}Controller:
         return deleted_${single_name}
 
 ${plural_name}_controller = ${Name_plural}Controller(
-    ${plural_name}_repo=${Name_plural}Repository(
-        ${plural_name}_ds=${Name_plural}DataSource(),
-    ),
+    ${plural_name}_repo=${Name_plural}Repository.get_instance(),
 )
 """
 )

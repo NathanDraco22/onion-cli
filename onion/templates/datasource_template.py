@@ -45,15 +45,10 @@ def get_data_source_template(singular_name: str) -> str:
 
 datasource_with_collection_template_content = Template(
     """from typing import Any
-from typing_extensions import Self
 from services.mongo_collections.v${version} import ${Name_plural}Collection
 
 
 class ${Name_plural}DataSource:
-    def __new__(cls) -> Self:
-        if not hasattr(cls, "instance"):
-            cls.instance = super(cls, cls).__new__(cls)
-        return cls.instance
 
     async def create_${single_name}(self, ${single_name}: dict[str, Any]) -> dict[str, Any]:
         collection = ${Name_plural}Collection()

@@ -48,8 +48,17 @@ from .models.${single_name}_model import Create${Name}, Update${Name}, ${Name}In
 
 
 class ${Name_plural}Repository:
+    
+    _instance: "${Name_plural}Repository|None" = None
+    
     def __init__(self, ${plural_name}_ds: ${Name_plural}DataSource):
         self.${plural_name}_ds = ${plural_name}_ds
+
+    @classmethod
+    def get_instance(cls) -> "${Name_plural}Repository":
+        if cls._instance is None:
+            cls._instance = cls(${Name_plural}DataSource())
+        return cls._instance
 
     async def create_${single_name}(self, create_${single_name}: Create${Name}) -> ${Name}InDb:
         # TODO: implement create

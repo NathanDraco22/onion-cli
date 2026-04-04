@@ -1,6 +1,3 @@
-from typing_extensions import Self
-
-
 class Mediator:
     """
     This class is a mediator between the cli and the onion generator.
@@ -8,9 +5,11 @@ class Mediator:
     from the onion generator.
     """
 
-    def __new__(cls) -> Self:
-        if not hasattr(cls, "instance"):
-            cls.instance = super(Mediator, cls).__new__(cls)
-        return cls.instance
+    _instance: "Mediator|None" = None
+
+    def __new__(cls) -> "Mediator":
+        if cls._instance is None:
+            cls._instance = super(Mediator, cls).__new__(cls)
+        return cls._instance
 
     output_folders: list[str] = []

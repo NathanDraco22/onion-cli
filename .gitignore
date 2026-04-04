@@ -1,0 +1,56 @@
+# Python cache
+__pycache__/
+
+# Compiled Python files
+*.pyc
+
+# Distribution / packaging
+.egg-info/
+dist/
+build/
+.tox
+
+# Logs
+logs/
+*.log
+
+# Unit test / coverage reports
+htmlcov/
+.tox
+
+# Packages
+# It usually is better to unpack these packages in a
+# virtualenv and/or simply to delete the package, rather
+# than to leave them sitting around in your repo.
+# .eggs/
+#pip-wheel/
+#local/
+#lib/
+#lib64/
+#parts/
+#bin/
+#include/
+#lib2to3/
+#share/
+#doc/
+#build/
+#bdist_wheel/
+#pypackages/
+#*.egg-info/
+#*.egg
+#*.whl
+#*.pyo
+#*.pyc
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+nose2.html
+coverage.xml
+
+# Translations
+locale/
+
+
+
