@@ -13,3 +13,8 @@ dependencies = [
 
 [project.scripts]
 onion = "onion.main:app"
+
+[dependency-groups]
+dev = [
+    "ty>=0.0.31",
+]
