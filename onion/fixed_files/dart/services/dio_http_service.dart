@@ -6,10 +6,7 @@ import 'package:http_cache_hive_store/http_cache_hive_store.dart';
 import 'exceptions/http_exceptions.dart';
 
 mixin DioHttpService {
-  final _cacheOptions = CacheOptions(
-    store: HiveCacheStore(null),
-    policy: CachePolicy.request,
-  );
+  final _cacheOptions = CacheOptions(store: HiveCacheStore(null), policy: CachePolicy.request);
 
   Dio? _dio;
 
