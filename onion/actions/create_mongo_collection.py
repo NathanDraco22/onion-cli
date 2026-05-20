@@ -28,9 +28,10 @@ def create_mongo_collection(input_name: str, version: int) -> None:
     if not service_folder.exists():
         service_folder.mkdir()
 
-    # check "app/services/mongo_service.py" file
+    # check "app/services/mongo_service.py" and "app/services/base_mongo_collection.py"
     mongo_service_file = service_folder / "mongo_service.py"
-    if not mongo_service_file.exists():
+    base_collection_file = service_folder / "base_mongo_collection.py"
+    if not mongo_service_file.exists() or not base_collection_file.exists():
         create_mongo_service()
 
     mongo_collection_folder = service_folder / "mongo_collections"

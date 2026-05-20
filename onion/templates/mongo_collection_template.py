@@ -6,28 +6,18 @@ collection_class_template_content = Template(
     """from typing import Any
 
 from pymongo import ReturnDocument
-from services import MongoService
+from services import BaseMongoCollection
 
 
-class ${Name_plural}Collection:
+class ${Name_plural}Collection(BaseMongoCollection):
     collection_name = "${Name_plural}"
-    _instance: "${Name_plural}Collection|None" = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(cls, cls).__new__(cls)
-        return cls._instance
-
-    def __init__(self):
-        mongo_service = MongoService()
-        self.__collection = mongo_service.get_collection(self.collection_name)
 
     async def create_${single_name}(self, ${single_name}: dict) -> None:
-        collection = self.__collection
+        collection = self._collection
         await collection.insert_one(${single_name})
 
     async def fetch_all_${plural_name}(self) -> list[dict[str, Any]]:
-        collection = self.__collection
+        collection = self._collection
         cursor = collection.find()
 
         result = await cursor.to_list(length=None)
@@ -36,7 +26,7 @@ class ${Name_plural}Collection:
         return result
 
     async def fetch_${single_name}_by_id(self, ${single_name}_id: str) -> dict[str, Any] | None:
-        collection = self.__collection
+        collection = self._collection
         result = await collection.find_one({"id": ${single_name}_id})
         return result
 
@@ -45,7 +35,7 @@ class ${Name_plural}Collection:
         ${single_name}_id: str,
         ${single_name}: dict,
     ) -> dict[str, Any] | None:
-        collection = self.__collection
+        collection = self._collection
 
         result = await collection.find_one_and_update(
             {"id": ${single_name}_id},
@@ -56,7 +46,7 @@ class ${Name_plural}Collection:
         return result
 
     async def delete_${single_name}_by_id(self, ${single_name}_id: str) -> dict[str, Any] | None:
-        collection = self.__collection
+        collection = self._collection
         result = await collection.find_one_and_delete({"id": ${single_name}_id})
         return result
 """

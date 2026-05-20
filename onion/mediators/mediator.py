@@ -12,4 +12,6 @@ class Mediator:
             cls._instance = super(Mediator, cls).__new__(cls)
         return cls._instance
 
+    user_output_folder: str = ""
+
     output_folders: list[str] = []

@@ -51,26 +51,26 @@ from services.mongo_collections.v${version} import ${Name_plural}Collection
 class ${Name_plural}DataSource:
 
     async def create_${single_name}(self, ${single_name}: dict[str, Any]) -> dict[str, Any]:
-        collection = ${Name_plural}Collection()
+        collection = ${Name_plural}Collection.get_instance()
         await collection.create_${single_name}(${single_name})
         return ${single_name}
 
     async def get_all_${plural_name}(self) -> list[dict[str, Any]]:
-        collection = ${Name_plural}Collection()
+        collection = ${Name_plural}Collection.get_instance()
         return await collection.fetch_all_${plural_name}()
 
     async def get_${single_name}_by_id(self, ${single_name}_id: str) -> dict[str, Any] | None:
-        collection = ${Name_plural}Collection()
+        collection = ${Name_plural}Collection.get_instance()
         return await collection.fetch_${single_name}_by_id(${single_name}_id)
 
     async def update_${single_name}_by_id(
         self, ${single_name}_id: str, ${single_name}: dict[str, Any]
     ) -> dict[str, Any] | None:
-        collection = ${Name_plural}Collection()
+        collection = ${Name_plural}Collection.get_instance()
         return await collection.update_${single_name}_by_id(${single_name}_id, ${single_name})
 
     async def delete_${single_name}_by_id(self, ${single_name}_id: str) -> dict[str, Any] | None:
-        collection = ${Name_plural}Collection()
+        collection = ${Name_plural}Collection.get_instance()
         return await collection.delete_${single_name}_by_id(${single_name}_id)
 """
 )
