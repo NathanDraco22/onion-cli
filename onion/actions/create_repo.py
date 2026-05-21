@@ -83,4 +83,8 @@ def create_repo(
 
     init_file_path.write_text(get_init_file_template(name))
 
-    Mediator().output_folders.append(f"app/repos/v{version}/{variations.plural_name}")
+    base_folder_name = (Path(Mediator().user_output_folder).name
+                        if Mediator().user_output_folder else "app")
+    Mediator().output_folders.append(
+        f"{base_folder_name}/repos/v{version}/{variations.plural_name}",
+    )

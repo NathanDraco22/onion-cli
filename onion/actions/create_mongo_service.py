@@ -7,26 +7,29 @@ from onion.templates.base_mongo_collection_template import (
 from onion.utils.file_utils import gen_init
 
 
+def _get_base_path() -> Path:
+    user_folder = Mediator().user_output_folder
+    return Path(user_folder) if user_folder else Path("app")
+
+
 def create_mongo_service():
     print("Creating mongo service...")
-    # check "app" folder
-    app_folder = Path("app")
-    if not app_folder.exists():
-        app_folder.mkdir()
+    base_folder = _get_base_path()
+    if not base_folder.exists():
+        base_folder.mkdir()
 
-    # check "app/services" folder
-    service_folder = app_folder / "services"
+    service_folder = base_folder / "services"
     if not service_folder.exists():
         service_folder.mkdir()
 
-    # check "app/services/mongo_service.py"
+    # check "mongo_service.py"
     service_file = service_folder / "mongo_service.py"
     if not service_file.exists():
         service_file.touch()
 
     service_file.write_text(get_mongo_service_template())
 
-    # check "app/services/base_mongo_collection.py"
+    # check "base_mongo_collection.py"
     base_collection_file = service_folder / "base_mongo_collection.py"
     if not base_collection_file.exists():
         base_collection_file.touch()
@@ -35,5 +38,5 @@ def create_mongo_service():
 
     gen_init(service_folder)
 
-    Mediator().output_folders.append("app/services/mongo_service.py")
-    Mediator().output_folders.append("app/services/base_mongo_collection.py")
+    Mediator().output_folders.append(f"{base_folder.name}/services/mongo_service.py")
+    Mediator().output_folders.append(f"{base_folder.name}/services/base_mongo_collection.py")

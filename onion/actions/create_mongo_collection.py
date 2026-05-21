@@ -13,22 +13,25 @@ from onion.utils.file_utils import gen_init
 from .create_mongo_service import create_mongo_service
 
 
+def _get_base_path() -> Path:
+    user_folder = Mediator().user_output_folder
+    return Path(user_folder) if user_folder else Path("app")
+
+
 def create_mongo_collection(input_name: str, version: int) -> None:
     variations = get_entity_name_variations(input_name)
 
     name = variations.single_name
 
-    # check "app" folder
-    app_folder = Path("app")
-    if not app_folder.exists():
-        app_folder.mkdir()
+    base_folder = _get_base_path()
+    if not base_folder.exists():
+        base_folder.mkdir()
 
-    # check "app/services" folder
-    service_folder = app_folder / "services"
+    service_folder = base_folder / "services"
     if not service_folder.exists():
         service_folder.mkdir()
 
-    # check "app/services/mongo_service.py" and "app/services/base_mongo_collection.py"
+    # check "mongo_service.py" and "base_mongo_collection.py"
     mongo_service_file = service_folder / "mongo_service.py"
     base_collection_file = service_folder / "base_mongo_collection.py"
     if not mongo_service_file.exists() or not base_collection_file.exists():
@@ -38,12 +41,10 @@ def create_mongo_collection(input_name: str, version: int) -> None:
     if not mongo_collection_folder.exists():
         mongo_collection_folder.mkdir()
 
-    # check "app/services/mongo_collections/v{version}" folder
     version_folder = mongo_collection_folder / f"v{version}"
     if not version_folder.exists():
         version_folder.mkdir()
 
-    # check "app/services/mongo_collection.py"
     mongo_collection_file = version_folder / get_mongo_collection_filename(name)
     if not mongo_collection_file.exists():
         mongo_collection_file.touch()
@@ -53,11 +54,10 @@ def create_mongo_collection(input_name: str, version: int) -> None:
     gen_init(version_folder)
 
     # check config folder
-    config_folder = app_folder / "config"
+    config_folder = base_folder / "config"
     if not config_folder.exists():
         config_folder.mkdir()
 
-    # check config/onion-config.toml
     config_file = config_folder / "onion-config.toml"
     if not config_file.exists():
         config_file.touch()
@@ -86,5 +86,5 @@ def create_mongo_collection(input_name: str, version: int) -> None:
         f.writelines(lines)
 
     Mediator().output_folders.append(
-        f"app/services/mongo_collections/v{version}/{variations.plural_name}_collection.py",
+        f"{base_folder.name}/services/mongo_collections/v{version}/{variations.plural_name}_collection.py",
     )

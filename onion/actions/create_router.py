@@ -15,32 +15,33 @@ from onion.utils.string_utils import (
 )
 
 
+def _get_base_path() -> Path:
+    user_folder = Mediator().user_output_folder
+    return Path(user_folder) if user_folder else Path("app")
+
+
 def create_router(input_name: str, version: int, use_module: bool = False) -> None:
     print("Creating router...")
     name = get_entity_name_variations(input_name).single_name
-    # check app folder
-    app_folder = Path("app")
-    if not app_folder.exists():
-        app_folder.mkdir()
 
-    # check app/routes folder
-    api_folder = app_folder / "api"
+    base_folder = _get_base_path()
+    if not base_folder.exists():
+        base_folder.mkdir()
+
+    api_folder = base_folder / "api"
     if not api_folder.exists():
         api_folder.mkdir()
 
-    # check app/routes/v{version} folder
     version_folder = api_folder / f"v{version}"
     if not version_folder.exists():
         version_folder.mkdir()
 
     plural_name = singular_to_plural_english(name)
 
-    # check app/routes/v{version}/{plural_name} folder
     module_folder = version_folder / plural_name
     if not module_folder.exists():
         module_folder.mkdir()
 
-    # check app/routers/v{version}/{name}_router.py
     router_file = module_folder / f"{plural_name}_router.py"
     if not router_file.exists():
         router_file.touch()
@@ -70,7 +71,7 @@ def create_router(input_name: str, version: int, use_module: bool = False) -> No
 
     create_father_router_file(router_file, plural_name, version)
 
-    Mediator().output_folders.append(f"app/api/v{version}/{plural_name}")
+    Mediator().output_folders.append(f"{base_folder.name}/api/v{version}/{plural_name}")
 
 
 def create_father_router_file(router_file: Path, plural_name: str, version: int):

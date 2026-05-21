@@ -91,7 +91,12 @@ def fastapi_init(
 def crud(
     names: list[str] = Argument(help="module name or list of names"),
     version: int = Option(help="version example: 1"),
+    output_dir: str = Option(
+        default="",
+        help="output directory (default: current directory)",
+    ),
 ):
+    Mediator().user_output_folder = output_dir
     for name in names:
         if is_plural_english(name):
             raise Exception("plural names are not allowed")
@@ -108,7 +113,12 @@ def crud(
 def crud_mongo(
     names: list[str] = Argument(help="module name or list of names"),
     version: int = Option(help="version example: 1"),
+    output_dir: str = Option(
+        default="",
+        help="output directory (default: current directory)",
+    ),
 ):
+    Mediator().user_output_folder = output_dir
     for name in names:
         if is_plural_english(name):
             raise Exception("plural names are not allowed")
@@ -127,7 +137,12 @@ def crud_mongo(
 def repo(
     names: list[str] = Argument(help="module name"),
     version: int = Option(help="version example: 1"),
+    output_dir: str = Option(
+        default="",
+        help="output directory (default: current directory)",
+    ),
 ):
+    Mediator().user_output_folder = output_dir
     for name in names:
         if is_plural_english(name):
             raise Exception("plural names are not allowed")
@@ -144,7 +159,12 @@ def repo(
 def repo_mongo(
     names: list[str] = Argument(help="module name"),
     version: int = Option(help="version example: 1"),
+    output_dir: str = Option(
+        default="",
+        help="output directory (default: current directory)",
+    ),
 ):
+    Mediator().user_output_folder = output_dir
     for name in names:
         if is_plural_english(name):
             raise Exception("plural names are not allowed")
@@ -161,7 +181,12 @@ def repo_mongo(
 def router(
     names: list[str] = Argument(help="router name"),
     version: int = Option(help="version example: 1"),
+    output_dir: str = Option(
+        default="",
+        help="output directory (default: current directory)",
+    ),
 ):
+    Mediator().user_output_folder = output_dir
     for name in names:
         if is_plural_english(name):
             raise Exception("plural names are not allowed")

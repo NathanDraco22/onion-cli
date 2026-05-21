@@ -1,14 +1,19 @@
 from pathlib import Path
+from onion.mediators import Mediator
+
+
+def _get_base_path(fallback: str) -> Path:
+    user_folder = Mediator().user_output_folder
+    return Path(user_folder) if user_folder else Path(fallback)
 
 
 def create_repos_directory(name: str, version: int) -> Path:
-    # check "app" folder
-    app_folder = Path("app")
-    if not app_folder.exists():
-        app_folder.mkdir()
+    base_folder = _get_base_path("app")
+    if not base_folder.exists():
+        base_folder.mkdir()
 
     # check "repos" folder
-    module_folder_path = app_folder / "repos"
+    module_folder_path = base_folder / "repos"
     if not module_folder_path.exists():
         module_folder_path.mkdir()
 
@@ -26,13 +31,12 @@ def create_repos_directory(name: str, version: int) -> Path:
 
 
 def create_generated_output_directory(name: str) -> Path:
-    # check "generated" folder
-    generated_folder_path = Path("generated_output")
-    if not generated_folder_path.exists():
-        generated_folder_path.mkdir()
+    base_folder = _get_base_path("generated_output")
+    if not base_folder.exists():
+        base_folder.mkdir()
 
     # check "generated/{name}" folder
-    output_folder_path = generated_folder_path / name
+    output_folder_path = base_folder / name
     if not output_folder_path.exists():
         output_folder_path.mkdir()
 

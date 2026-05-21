@@ -22,9 +22,15 @@ All entity names must be provided in **singular** form. The CLI automatically de
 
 ---
 
-## Output Directory & Context
+## Output Directory
 
-All commands that generate FastAPI code assume the current working directory contains an `app/` folder (or will create one). The project scaffolding commands (`project`) explicitly create the folder structure from templates.
+All FastAPI CRUD commands accept a `--output-dir` option that controls where files are created:
+
+- **Without `--output-dir`** (default): creates `app/api/...`, `app/repos/...`, etc. (current behavior, backwards compatible).
+- **With `--output-dir <DIR>`**: `<DIR>` replaces `app/` as the base folder. For example, `--output-dir ./src` creates `src/api/...`, `src/repos/...`, `src/services/...`, `src/config/...`.
+- For the `repo` command without `--version`: `<DIR>` replaces `generated_output/`.
+
+The project scaffolding commands (`project`) have their own `OUTPUT_DIR` argument that works as the target project root.
 
 ---
 
@@ -100,7 +106,15 @@ onion crud product --version 1
 
 # Multiple entities at once
 onion crud product category supplier --version 1
+
+# Custom output directory
+onion crud product --version 1 --output-dir ./src
 ```
+
+| Global Option | Default | Description |
+|---|---|---|
+| `--version` | | **Required.** API version number |
+| `--output-dir` | `""` | Output directory (replaces `app/` or `generated_output/`) |
 
 #### `onion crud`
 
@@ -110,7 +124,7 @@ Creates router, controller, repository, datasource, and model.
 onion crud product --version 1
 ```
 
-**Generated files:**
+**Generated files (with default output):**
 ```
 app/
 ├── api/v1/products/
@@ -181,8 +195,9 @@ onion crud-mongo product --version 1
 ```
 app/services/
 ├── mongo_service.py                       # Singleton MongoDB client (Motor)
+├── base_mongo_collection.py               # Base class with singleton pattern
 └── mongo_collections/v1/
-    ├── products_collection.py             # Collection class with CRUD operations
+    ├── products_collection.py             # Collection class (extends BaseMongoCollection)
     └── __init__.py
 app/config/
 └── onion-config.toml                      # Tracks registered collections
@@ -190,7 +205,7 @@ app/config/
 
 The datasource is wired to use the MongoDB collection (instead of leaving NotImplementedError).
 
-**Number of files created:** 9
+**Number of files created:** 10
 
 #### `onion repo-mongo`
 
@@ -200,9 +215,9 @@ Repository layer + MongoDB collection (no router/controller).
 onion repo-mongo product --version 1
 ```
 
-**Generated files:** Everything from `repo` plus `mongo_service.py`, `mongo_collections/v1/products_collection.py`, and `onion-config.toml`.
+**Generated files:** Everything from `repo` plus `mongo_service.py`, `base_mongo_collection.py`, `mongo_collections/v1/products_collection.py`, and `onion-config.toml`.
 
-**Number of files created:** 7
+**Number of files created:** 8
 
 ---
 
@@ -231,7 +246,45 @@ Singleton with `get_instance()`. Calls the datasource and validates results into
 #### Datasource (`products_datasource.py`)
 
 - Without MongoDB: stub with `NotImplementedError`.
-- With MongoDB: calls `ProductsCollection` methods.
+- With MongoDB: calls `ProductsCollection.get_instance()` methods.
+
+#### MongoDB Collection (`products_collection.py`)
+
+Extends `BaseMongoCollection` which provides:
+- Singleton pattern via `get_instance()` classmethod
+- `self._collection` — the Motor collection instance
+
+The generated class only defines `collection_name` and CRUD methods:
+```python
+class ProductsCollection(BaseMongoCollection):
+    collection_name = "Products"
+
+    async def create_product(self, product: dict) -> None: ...
+    async def fetch_all_products(self) -> list[dict[str, Any]]: ...
+    async def fetch_product_by_id(self, product_id: str) -> dict[str, Any] | None: ...
+    async def update_product_by_id(...): ...
+    async def delete_product_by_id(...): ...
+```
+
+#### BaseMongoCollection (`services/base_mongo_collection.py`)
+
+Abstract base class auto-generated alongside `mongo_service.py`. Handles the singleton and MongoService wiring so collection subclasses only write CRUD logic:
+
+```python
+class BaseMongoCollection:
+    collection_name: str = ""
+    _instance: "BaseMongoCollection|None" = None
+
+    def __init__(self) -> None:
+        mongo_service = MongoService()
+        self._collection = mongo_service.get_collection(self.collection_name)
+
+    @classmethod
+    def get_instance(cls: Type[T]) -> T:
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+```
 
 #### Model (`product_model.py`)
 
@@ -458,9 +511,9 @@ onion router supplier --version 1
 | `project fastapi-init` | ~25 | Scaffolding |
 | `project flutter-lib` | ~20 | Scaffolding |
 | `crud` | 6 | CRUD |
-| `crud-mongo` | 9 | CRUD + Mongo |
+| `crud-mongo` | 10 | CRUD + Mongo |
 | `repo` | 4 | Data Layer |
-| `repo-mongo` | 7 | Data Layer + Mongo |
+| `repo-mongo` | 8 | Data Layer + Mongo |
 | `router` | 2 | Endpoints |
 | `dart` | 5 | Dart Data Layer |
 | `dart-model` | 1 | Dart Model |
