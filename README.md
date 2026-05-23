@@ -228,6 +228,24 @@ Generates (inside `{name}_cubit/`):
 | `--read-only` | Generate only read cubit |
 | `--write-only` | Generate only write cubit |
 
+#### `onion dart-view`
+
+Creates a **single view screen** for Flutter (StatelessWidget).
+
+```bash
+onion dart-view <NAME> --output-dir "."
+```
+
+Generates `{output_dir}/{plural_name}_view.dart` with:
+- `{Name}Screen` (public)
+- `_RootScaffold` (private)
+- `_Body` (private)
+
+| Argument/Option | Default | Description |
+|---|---|---|
+| `NAME` | | Entity name in singular |
+| `--output-dir` | `.` | Output directory |
+
 #### `onion flutter-module`
 
 Creates a **complete Flutter feature module** with cubits, dialogs, view, and widgets.
@@ -239,7 +257,7 @@ onion flutter-module <NAME> --output-dir "."
 Generates `lib/src/modules/{plural_name}/` with:
 - `cubit/` (read + write cubit and state)
 - `dialogs/` (stub file)
-- `view/` (stub file)
+- `view/` (`{Name}Screen` StatelessWidget)
 - `widgets/` (stub file)
 
 #### `onion barrel`

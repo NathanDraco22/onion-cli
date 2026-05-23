@@ -8,6 +8,7 @@ from onion.templates.dart.write_cubit_template import (
     get_write_cubit_template,
     get_write_state_template,
 )
+from onion.templates.dart.view_template import get_view_template
 from onion.utils.string_utils import get_entity_name_variations
 
 
@@ -47,7 +48,7 @@ def create_flutter_module(
     dialogs_init_file.write_text(f"// {name} dialogs\n")
 
     view_init_file = view_path / f"{plural_name}_view.dart"
-    view_init_file.write_text(f"// {name} view\n")
+    view_init_file.write_text(get_view_template(name))
 
     widgets_init_file = widgets_path / f"{plural_name}_widgets.dart"
     widgets_init_file.write_text(f"// {name} widgets\n")

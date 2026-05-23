@@ -16,6 +16,7 @@ from onion.actions.dart.create_repository import create_repository
 from onion.actions.dart.create_cubit import create_cubit
 from onion.actions.dart.create_flutter_module import create_flutter_module
 from onion.actions.dart.create_model import create_model
+from onion.actions.dart.create_view import create_view
 from onion.actions.project.copy_flutter_project import copy_flutter_project
 from onion.actions.project.copy_fastapi_project import copy_fastapi_project
 from onion.actions.project.copy_fastapi_full_project import copy_fastapi_full_project
@@ -283,6 +284,25 @@ def flutter_module(
     create_flutter_module(name, output_dir)
 
     print("[green]flutter module created :heavy_check_mark:[/green]")
+
+    for folder in Mediator().output_folders:
+        print(f"[yellow]{folder}[/yellow]")
+
+
+@app.command(help="create view screen for Dart/Flutter")
+def dart_view(
+    name: str = Argument(help="entity name (e.g., product, client)"),
+    output_dir: str = Option(
+        default=".",
+        help="output directory (default: current directory)",
+    ),
+):
+    if is_plural_english(name):
+        raise Exception("plural names are not allowed")
+
+    create_view(name, output_dir)
+
+    print("[green]dart view created :heavy_check_mark:[/green]")
 
     for folder in Mediator().output_folders:
         print(f"[yellow]{folder}[/yellow]")

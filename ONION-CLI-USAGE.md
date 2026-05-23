@@ -368,6 +368,24 @@ onion dart-cubit product --write-only
 
 **States (Write):** `WriteProductInitial`, `WritingProduct`, `WriteProductSuccess`, `ProductCreated`, `ProductUpdated`, `ProductDeleted`, `WriteProductError`.
 
+### `onion dart-view`
+
+Creates a single view screen file for Flutter.
+
+```bash
+onion dart-view product --output-dir "./lib/src"
+```
+
+**Generated:** `{output_dir}/{plural_name}_view.dart` with 3 classes:
+- `{Name}Screen` — public StatelessWidget
+- `_RootScaffold` — private scaffold
+- `_Body` — private body with centered text
+
+| Argument/Option | Default | Description |
+|---|---|---|
+| `NAME` | | Entity name in singular |
+| `--output-dir` | `.` | Output directory |
+
 ### `onion flutter-module`
 
 Creates a complete feature module folder structure.
@@ -384,7 +402,7 @@ cubit/
 ├── write_products_cubit.dart
 └── write_products_state.dart
 dialogs/products_dialogs.dart      # Stub
-view/products_view.dart            # Stub
+view/products_view.dart            # ProductScreen (StatelessWidget)
 widgets/products_widgets.dart      # Stub
 ```
 
@@ -424,6 +442,11 @@ Wraps the data source, maintains an in-memory `_products` list. Adds:
 #### Models (`product_model.dart`)
 
 4 classes: `BaseProduct`, `CreateProduct`, `UpdateProduct`, `ProductInDb` (with `fromJson`).
+
+#### View Screen (`products_view.dart`)
+
+`{Name}Screen` — StatelessWidget with scaffold structure:
+- `{Name}Screen` → `_RootScaffold` → `Scaffold` → `_Body` → `Center(child: Text("{Name}Screen"))`
 
 ---
 
@@ -518,5 +541,6 @@ onion router supplier --version 1
 | `dart` | 5 | Dart Data Layer |
 | `dart-model` | 1 | Dart Model |
 | `dart-cubit` | 4 | Dart State |
+| `dart-view` | 1 | Dart View |
 | `flutter-module` | 6 | Dart Module |
 | `barrel` | 1 | Utility |
