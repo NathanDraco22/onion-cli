@@ -13,7 +13,7 @@ def create_model(
     single_name = variations.single_name
 
     if lib_path:
-        models_path = Path(output_dir) / "lib" / "src" / "models"
+        models_path = Path(output_dir) / "domain" / "models"
     else:
         models_path = Path(output_dir) / "models"
 
