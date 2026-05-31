@@ -238,7 +238,7 @@ onion dart-view <NAME> --output-dir "."
 ```
 
 Generates `{output_dir}/{plural_name}_view.dart` with:
-- `{Name}Screen` (public)
+- `{Name_plural}Screen` (public)
 - `_RootScaffold` (private)
 - `_Body` (private)
 
@@ -255,11 +255,16 @@ Creates a **complete Flutter feature module** with cubits, dialogs, view, and wi
 onion flutter-module <NAME> --output-dir "."
 ```
 
-Generates `lib/src/modules/{plural_name}/` with:
+Generates `{output_dir}/{plural_name}/` with:
 - `cubit/` (read + write cubit and state)
 - `dialogs/` (stub file)
-- `view/` (`{Name}Screen` StatelessWidget)
+- `view/` (`{Name_plural}Screen` StatelessWidget)
 - `widgets/` (stub file)
+
+| Argument/Option | Default | Description |
+|---|---|---|
+| `NAME` | | Entity name in singular |
+| `--output-dir` | `.` | Directory where the module folder will be created (not the project root) |
 
 #### `onion barrel`
 

@@ -20,7 +20,7 @@ def create_flutter_module(
     name = variations.single_name
     plural_name = variations.plural_name
 
-    module_path = Path(output_dir) / "lib" / "src" / "modules" / plural_name
+    module_path = Path(output_dir) / plural_name
 
     cubit_path = module_path / "cubit"
     dialogs_path = module_path / "dialogs"

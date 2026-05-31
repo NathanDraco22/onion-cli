@@ -379,7 +379,7 @@ onion dart-view product --output-dir "./lib/src"
 ```
 
 **Generated:** `{output_dir}/{plural_name}_view.dart` with 3 classes:
-- `{Name}Screen` — public StatelessWidget
+- `{Name_plural}Screen` — public StatelessWidget
 - `_RootScaffold` — private scaffold
 - `_Body` — private body with centered text
 
@@ -393,20 +393,29 @@ onion dart-view product --output-dir "./lib/src"
 Creates a complete feature module folder structure.
 
 ```bash
+# Module created inside ./products/ (default output-dir = .):
 onion flutter-module product
+
+# Recommended: specify a target directory:
+onion flutter-module operative-expense --output-dir lib/src/modules
 ```
 
-**Generated:** `lib/src/modules/products/` with:
+**Generated:** `{output_dir}/{plural_name}/` with:
 ```
 cubit/
-├── read_products_cubit.dart
-├── read_products_state.dart
-├── write_products_cubit.dart
-└── write_products_state.dart
-dialogs/products_dialogs.dart      # Stub
-view/products_view.dart            # ProductScreen (StatelessWidget)
-widgets/products_widgets.dart      # Stub
+├── read_{plural_name}_cubit.dart
+├── read_{plural_name}_state.dart
+├── write_{plural_name}_cubit.dart
+└── write_{plural_name}_state.dart
+dialogs/{plural_name}_dialogs.dart      # Stub
+view/{plural_name}_view.dart            # {Name_plural}Screen (StatelessWidget)
+widgets/{plural_name}_widgets.dart      # Stub
 ```
+
+| Argument/Option | Default | Description |
+|---|---|---|
+| `NAME` | | Entity name in singular |
+| `--output-dir` | `.` | Directory where the module folder will be created (not the project root) |
 
 **Number of files created:** 6
 
@@ -447,8 +456,8 @@ Wraps the data source, maintains an in-memory `_products` list. Adds:
 
 #### View Screen (`products_view.dart`)
 
-`{Name}Screen` — StatelessWidget with scaffold structure:
-- `{Name}Screen` → `_RootScaffold` → `Scaffold` → `_Body` → `Center(child: Text("{Name}Screen"))`
+`{Name_plural}Screen` — StatelessWidget with scaffold structure:
+- `{Name_plural}Screen` → `_RootScaffold` → `Scaffold` → `_Body` → `Center(child: Text("{Name_plural}Screen"))`
 
 ---
 

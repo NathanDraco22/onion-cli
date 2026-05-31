@@ -1,6 +1,10 @@
+import sys
 from typer import Typer
 from typer import Argument, Option
 from rich import print
+
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
 from onion.mediators import Mediator
 from onion.actions.create_repo import create_repo
 from onion.actions.create_repo_with_mongo_collection import (
@@ -275,7 +279,7 @@ def flutter_module(
     name: str = Argument(help="entity name (e.g., unit, product, client)"),
     output_dir: str = Option(
         default=".",
-        help="project directory (default: current directory)",
+        help="output directory where the module folder will be created (default: current directory)",
     ),
 ):
     if is_plural_english(name):

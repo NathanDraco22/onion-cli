@@ -6,13 +6,13 @@ def get_view_template(singular_name: str) -> str:
         raise ValueError("name is not a valid string")
 
     variations = get_entity_name_variations(singular_name)
-    name = variations.Name
+    name_plural = variations.Name_plural
 
     return (
         "import 'package:flutter/material.dart';\n"
         "\n"
-        f"class {name}Screen extends StatelessWidget {{\n"
-        f"  const {name}Screen({{super.key}});\n"
+        f"class {name_plural}Screen extends StatelessWidget {{\n"
+        f"  const {name_plural}Screen({{super.key}});\n"
         "\n"
         "  @override\n"
         "  Widget build(BuildContext context) {\n"
@@ -37,7 +37,7 @@ def get_view_template(singular_name: str) -> str:
         "  @override\n"
         "  Widget build(BuildContext context) {\n"
         "    return const Center(\n"
-        f'      child: Text("{name}Screen"),\n'
+        f'      child: Text("{name_plural}Screen"),\n'
         "    );\n"
         "  }\n"
         "}\n"
