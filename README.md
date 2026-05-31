@@ -220,7 +220,8 @@ onion dart-cubit <NAME> --output-dir "." --read-only --write-only
 ```
 
 Generates (inside `{name}_cubit/`):
-- `read_{plural_name}_cubit.dart` + `read_{plural_name}_state.dart`
+- `read_{plural_name}_cubit.dart` — with `mark{Name}Created` (puts item first + tracks in newItems), `mark{Name}Updated`, and `mark{Name}Deleted`
+- `read_{plural_name}_state.dart` — `Read{Name}Success` with `items`, `newItems`, `updatedItems`, `deletedItems`
 - `write_{plural_name}_cubit.dart` + `write_{plural_name}_state.dart`
 
 | Option | Description |

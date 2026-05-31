@@ -366,6 +366,8 @@ onion dart-cubit product --write-only
 
 **States (Read):** `ReadProductInitial`, `ReadProductLoading`, `ReadProductSuccess` (with lists for items/new/updated/deleted), `ReadProductSearching`, `HighlightedProductItem`, `ReadProductError`.
 
+**Cubit Methods (Read):** `getAll()` and `getById(id)` for fetching; `markCreated(item)` — puts item first in the items list (dedup by id) and tracks it in `newItems`; `markUpdated(item)` — adds item to `updatedItems`; `markDeleted(item)` — adds item to `deletedItems`.
+
 **States (Write):** `WriteProductInitial`, `WritingProduct`, `WriteProductSuccess`, `ProductCreated`, `ProductUpdated`, `ProductDeleted`, `WriteProductError`.
 
 ### `onion dart-view`
