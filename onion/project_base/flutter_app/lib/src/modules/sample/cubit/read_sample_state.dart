@@ -20,22 +20,23 @@ class ReadSampleSuccess extends ReadSampleState {
   });
 }
 
-final class ReadSampleSearching extends ReadSampleSuccess {
-  ReadSampleSearching(
+final class ReadSampleRefreshing extends ReadSampleSuccess {
+  ReadSampleRefreshing(
     super.items, {
     super.newItems,
     super.updatedItems,
     super.deletedItems,
   });
-}
 
-class HighlightedSampleItem extends ReadSampleSuccess {
-  HighlightedSampleItem(
-    super.items, {
-    super.newItems,
-    super.updatedItems,
-    super.deletedItems,
-  });
+  factory ReadSampleRefreshing.fromSuccess(
+    ReadSampleSuccess success,
+  ) =>
+      ReadSampleRefreshing(
+        success.items,
+        newItems: success.newItems,
+        updatedItems: success.updatedItems,
+        deletedItems: success.deletedItems,
+      );
 }
 
 final class ReadSampleError extends ReadSampleState {

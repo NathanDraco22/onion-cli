@@ -9,7 +9,12 @@ class ReadSampleCubit extends Cubit<ReadSampleState> {
 
   Future<void> getAll() async {
     try {
-      emit(ReadSampleLoading());
+      final currentState = state;
+      if (currentState is ReadSampleSuccess) {
+        emit(ReadSampleRefreshing.fromSuccess(currentState));
+      } else {
+        emit(ReadSampleLoading());
+      }
       final items = await repository.getAllSampleEntities();
       emit(ReadSampleSuccess(items));
     } catch (e) {
@@ -31,19 +36,29 @@ class ReadSampleCubit extends Cubit<ReadSampleState> {
     }
   }
 
-  void markSampleUpdated(SampleEntity item) {
-    final currentState = state;
-    if (currentState is ReadSampleSuccess) {
-      final updatedItems = [...currentState.updatedItems, item];
-      emit(ReadSampleSuccess(currentState.items, updatedItems: updatedItems));
-    }
-  }
-
-  void putSampleFirst(SampleEntity item) {
+  void markSampleCreated(SampleEntity item) {
     final currentState = state;
     if (currentState is ReadSampleSuccess) {
       final items = [item, ...currentState.items.where((u) => u.id != item.id)];
-      emit(ReadSampleSuccess(items, updatedItems: [item]));
+      final newItems = [...currentState.newItems, item];
+      emit(ReadSampleSuccess(items, newItems: newItems));
+    }
+  }
+
+  void markSampleUpdated(SampleEntity item) {
+    final currentState = state;
+    if (currentState is ReadSampleSuccess) {
+      final items = currentState.items.map((u) => u.id == item.id ? item : u).toList();
+      final updatedItems = [...currentState.updatedItems, item];
+      emit(ReadSampleSuccess(items, updatedItems: updatedItems));
+    }
+  }
+
+  void markSampleDeleted(SampleEntity item) {
+    final currentState = state;
+    if (currentState is ReadSampleSuccess) {
+      final deletedItems = [...currentState.deletedItems, item];
+      emit(ReadSampleSuccess(currentState.items, deletedItems: deletedItems));
     }
   }
 }

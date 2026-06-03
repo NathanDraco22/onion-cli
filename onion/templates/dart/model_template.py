@@ -8,11 +8,9 @@ def get_model_template(singular_name: str) -> str:
     variations = get_entity_name_variations(singular_name)
 
     name = variations.Name
-    name_plural = variations.Name_plural
-    single_name = variations.single_name
 
     return (
-        "class Base" + name + " extends Base" + name + "{\n"
+        "class Base" + name + " {\n"
         "  final String id;\n"
         "\n"
         "  Base" + name + "({required this.id});\n"
