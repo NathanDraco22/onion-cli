@@ -361,10 +361,12 @@ onion dart-cubit product --write-only
 ```
 
 **Generated:** `{output_dir}/{name}_cubit/` with:
-- `read_products_cubit.dart` + `read_products_state.dart`
-- `write_products_cubit.dart` + `write_products_state.dart`
+- `read_{plural_name}_cubit.dart` + `read_{plural_name}_state.dart`
+- `write_{plural_name}_cubit.dart` + `write_{plural_name}_state.dart`
 
-**States (Read):** `ReadProductInitial`, `ReadProductLoading`, `ReadProductSuccess` (with lists for items/new/updated/deleted), `ReadProductSearching`, `HighlightedProductItem`, `ReadProductError`.
+**Default `--output-dir`:** `lib/src/cubits` (generates in `lib/src/cubits/{name}_cubit/`)
+
+**States (Read):** `ReadProductInitial`, `ReadProductLoading`, `ReadProductSuccess` (with lists for items/new/updated/deleted), `ReadProductRefreshing` (with `factory fromSuccess`), `ReadProductError`.
 
 **Cubit Methods (Read):** `getAll()` and `getById(id)` for fetching; `markCreated(item)` — puts item first in the items list (dedup by id) and tracks it in `newItems`; `markUpdated(item)` — adds item to `updatedItems`; `markDeleted(item)` — adds item to `deletedItems`.
 

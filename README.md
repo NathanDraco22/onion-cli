@@ -216,10 +216,10 @@ Generates `{output_dir}/models/{single_name}_model.dart` with 4 classes:
 Creates cubit + state files for Flutter Bloc state management.
 
 ```bash
-onion dart-cubit <NAME> --output-dir "." --read-only --write-only
+onion dart-cubit <NAME> --output-dir "lib/src/cubits" --read-only --write-only
 ```
 
-Generates (inside `{name}_cubit/`):
+Generates (inside `{output_dir}/{name}_cubit/`):
 - `read_{plural_name}_cubit.dart` — with `mark{Name}Created` (puts item first + tracks in newItems), `mark{Name}Updated`, and `mark{Name}Deleted`
 - `read_{plural_name}_state.dart` — `Read{Name}Success` with `items`, `newItems`, `updatedItems`, `deletedItems`
 - `write_{plural_name}_cubit.dart` + `write_{plural_name}_state.dart`

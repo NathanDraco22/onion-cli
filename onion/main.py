@@ -251,8 +251,8 @@ def dart_model(
 def dart_cubit(
     name: str = Argument(help="entity name (e.g., unit, product, client)"),
     output_dir: str = Option(
-        default=".",
-        help="project directory (default: current directory)",
+        default="lib/src/cubits",
+        help="output directory for cubit files (default: lib/src/cubits)",
     ),
     read_only: bool = Option(
         default=False,
