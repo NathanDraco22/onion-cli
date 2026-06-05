@@ -21,7 +21,8 @@ from onion.actions.dart.create_cubit import create_cubit
 from onion.actions.dart.create_flutter_module import create_flutter_module
 from onion.actions.dart.create_model import create_model
 from onion.actions.dart.create_view import create_view
-from onion.actions.project.copy_flutter_project import copy_flutter_project
+from onion.actions.dart.create_service import create_service
+from onion.actions.dart.create_response import create_list_response
 from onion.actions.project.copy_fastapi_project import copy_fastapi_project
 from onion.actions.project.copy_fastapi_full_project import copy_fastapi_full_project
 
@@ -31,30 +32,9 @@ from onion.utils.dart.barrelfile_util import create_barrel_file
 app = Typer()
 
 project_app = Typer(
-    help="overwrite lib folder with Flutter template, app folder with FastAPI template"
+    help="overwrite app folder with FastAPI template"
 )
 app.add_typer(project_app, name="project")
-
-
-@project_app.command(help="create lib folder from Flutter template")
-def flutter_lib(
-    output_dir: str = Argument(
-        default=".", help="project directory (default: current directory)"
-    ),
-    package: str = Option(
-        default="com.example.app",
-        help="package name (default: com.example.app)",
-    ),
-    force: bool = Option(
-        default=False,
-        help="force overwrite if lib folder exists",
-    ),
-):
-    copy_flutter_project(output_dir, package, force)
-
-    print("[green]flutter lib folder created :heavy_check_mark:[/green]")
-    for folder in Mediator().output_folders:
-        print(f"[yellow]{folder}[/yellow]")
 
 
 @project_app.command(help="create app folder from FastAPI template")
@@ -307,6 +287,37 @@ def dart_view(
     create_view(name, output_dir)
 
     print("[green]dart view created :heavy_check_mark:[/green]")
+
+    for folder in Mediator().output_folders:
+        print(f"[yellow]{folder}[/yellow]")
+
+
+@app.command("dart-service", help="create http and/or hive service(s) for Dart/Flutter")
+def dart_service(
+    services: str = Argument(help="service types to create (e.g., http, hive, or http,hive)"),
+    output_dir: str = Option(
+        default=".",
+        help="output directory (default: current directory)",
+    ),
+):
+    create_service(services, output_dir)
+
+    print("[green]dart service(s) created :heavy_check_mark:[/green]")
+
+    for folder in Mediator().output_folders:
+        print(f"[yellow]{folder}[/yellow]")
+
+
+@app.command("dart-res", help="create list_response.dart response template for Dart/Flutter")
+def dart_res(
+    output_dir: str = Option(
+        default=".",
+        help="output directory (default: current directory)",
+    ),
+):
+    create_list_response(output_dir)
+
+    print("[green]dart response created :heavy_check_mark:[/green]")
 
     for folder in Mediator().output_folders:
         print(f"[yellow]{folder}[/yellow]")
