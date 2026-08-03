@@ -1,7 +1,7 @@
 from onion.utils.string_utils import get_entity_name_variations
 
 
-def get_repository_template(singular_name: str) -> str:
+def get_repository_template(singular_name: str, reactive: bool = False) -> str:
     if not singular_name or not isinstance(singular_name, str):
         raise ValueError("name is not a valid string")
 
@@ -13,7 +13,147 @@ def get_repository_template(singular_name: str) -> str:
     single_name = variations.single_name
     single_name_id = single_name + "Id"
 
+    if reactive:
+        return (
+            "import '../../data/"
+            + plural_name
+            + "_data_source.dart';\n"
+            "import '../../domain/models/"
+            + single_name
+            + "_model/"
+            + single_name
+            + "_model.dart';\n"
+            "import '../../domain/responses/list_response.dart';\n"
+            "import '../../tools/reactive_repo/reactive_repository.dart';\n"
+            "\n"
+            "class " + name_plural + "Repository with ReactiveRepository<" + name + "InDb> {\n"
+            "  final " + name_plural + "DataSource " + plural_name + "DataSource;\n"
+            "\n"
+            "  " + name_plural + "Repository(this." + plural_name + "DataSource);\n"
+            "\n"
+            "  Future<"
+            + name
+            + "InDb> create"
+            + name
+            + "(Create"
+            + name
+            + " create"
+            + name
+            + ") async {\n"
+            "    final result = await "
+            + plural_name
+            + "DataSource.create"
+            + name
+            + "(create"
+            + name
+            + ".toJson());\n"
+            "    final new" + name + " = " + name + "InDb.fromJson(result);\n"
+            "    notifyItemCreated(new" + name + ");\n"
+            "    return new" + name + ";\n"
+            "  }\n"
+            "\n"
+            "  Future<List<" + name + "InDb>> getAll" + name_plural + "() async {\n"
+            "    final results = await "
+            + plural_name
+            + "DataSource.getAll"
+            + name_plural
+            + "();\n"
+            "    final response = ListResponse<" + name + "InDb>.fromJson(\n"
+            "      results,\n"
+            "      " + name + "InDb.fromJson,\n"
+            "    );\n"
+            "\n"
+            "    return response.data;\n"
+            "  }\n"
+            "\n"
+            "  Future<"
+            + name
+            + "InDb?> get"
+            + name
+            + "ById(String "
+            + single_name_id
+            + ") async {\n"
+            "    final result = await "
+            + plural_name
+            + "DataSource.get"
+            + name
+            + "ById("
+            + single_name_id
+            + ");\n"
+            "    if (result == null) return null;\n"
+            "    return " + name + "InDb.fromJson(result);\n"
+            "  }\n"
+            "\n"
+            "  Future<List<"
+            + name
+            + "InDb>> search"
+            + name
+            + "ByKeyword(String keyword) async {\n"
+            "    final result = await "
+            + plural_name
+            + "DataSource.search"
+            + name
+            + "ByKeyword(keyword);\n"
+            "    final response = ListResponse<" + name + "InDb>.fromJson(\n"
+            "      result,\n"
+            "      " + name + "InDb.fromJson,\n"
+            "    );\n"
+            "    return response.data;\n"
+            "  }\n"
+            "\n"
+            "  Future<" + name + "InDb?> update" + name + "ById(\n"
+            "    String " + single_name_id + ",\n"
+            "    Update" + name + " " + single_name + ",\n"
+            "  ) async {\n"
+            "    final result = await "
+            + plural_name
+            + "DataSource.update"
+            + name
+            + "ById(\n"
+            "      " + single_name_id + ",\n"
+            "      " + single_name + ".toJson(),\n"
+            "    );\n"
+            "    if (result == null) return null;\n"
+            "\n"
+            "    final updated" + name + " = " + name + "InDb.fromJson(result);\n"
+            "    notifyItemUpdated(updated" + name + ");\n"
+            "    return updated" + name + ";\n"
+            "  }\n"
+            "\n"
+            "  Future<"
+            + name
+            + "InDb?> delete"
+            + name
+            + "ById(String "
+            + single_name_id
+            + ") async {\n"
+            "    final result = await "
+            + plural_name
+            + "DataSource.delete"
+            + name
+            + "ById("
+            + single_name_id
+            + ");\n"
+            "    if (result == null) return null;\n"
+            "\n"
+            "    final deleted" + name + " = " + name + "InDb.fromJson(result);\n"
+            "    notifyItemDeleted(deleted" + name + ");\n"
+            "    return deleted" + name + ";\n"
+            "  }\n"
+            "}\n"
+        )
+
     return (
+        "\n"
+        "import '../../data/"
+        + plural_name
+        + "_data_source.dart';\n"
+        "import '../../domain/models/"
+        + single_name
+        + "_model/"
+        + single_name
+        + "_model.dart';\n"
+        "import '../../domain/responses/list_response.dart';\n"
         "\n"
         "class " + name_plural + "Repository {\n"
         "  final " + name_plural + "DataSource " + plural_name + "DataSource;\n"
@@ -57,9 +197,6 @@ def get_repository_template(singular_name: str) -> str:
         "    );\n"
         "\n"
         "    _" + plural_name + " = response.data;\n"
-        "    _" + plural_name + ".sort(\n"
-        "      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),\n"
-        "    );\n"
         "    return _" + plural_name + ";\n"
         "  }\n"
         "\n"
@@ -96,21 +233,6 @@ def get_repository_template(singular_name: str) -> str:
         "      " + name + "InDb.fromJson,\n"
         "    );\n"
         "    return response.data;\n"
-        "  }\n"
-        "\n"
-        "  Future<List<"
-        + name
-        + "InDb>> search"
-        + name
-        + "ByKeywordLocal(String keyword) async {\n"
-        "    final result = " + plural_name + "\n"
-        "        .where(\n"
-        "          (u) => u.name.toLowerCase().contains(\n"
-        "            keyword.toLowerCase(),\n"
-        "          ),\n"
-        "        )\n"
-        "        .toList();\n"
-        "    return result;\n"
         "  }\n"
         "\n"
         "  Future<" + name + "InDb?> update" + name + "ById(\n"

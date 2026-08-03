@@ -1,7 +1,11 @@
 from onion.utils.string_utils import get_entity_name_variations
 
 
-def get_write_cubit_template(singular_name: str) -> str:
+def get_write_cubit_template(
+    singular_name: str,
+    reactive: bool = False,
+    import_prefix: str = "../../",
+) -> str:
     if not singular_name or not isinstance(singular_name, str):
         raise ValueError("name is not a valid string")
 
@@ -13,18 +17,110 @@ def get_write_cubit_template(singular_name: str) -> str:
     single_name = variations.single_name
     single_name_id = single_name + "Id"
 
+    model_import = (
+        "import '"
+        + import_prefix
+        + "domain/models/"
+        + single_name
+        + "_model/"
+        + single_name
+        + "_model.dart';\n"
+    )
+    repo_import = (
+        "import '"
+        + import_prefix
+        + "domain/repositories/"
+        + plural_name
+        + "_repository.dart';\n"
+    )
+
+    if reactive:
+        return (
+            "import 'package:flutter_bloc/flutter_bloc.dart';\n"
+            "\n"
+            + model_import
+            + repo_import
+            + "part 'write_" + plural_name + "_state.dart';\n"
+            "\n"
+            "class Write" + name + "Cubit extends Cubit<Write" + name + "State> {\n"
+            "  Write" + name + "Cubit(this._repository) : super(Write" + name + "Initial());\n"
+            "\n"
+            "  final " + name_plural + "Repository _repository;\n"
+            "\n"
+            "  Future<void> create(Create" + name + " create" + name + ") async {\n"
+            "    emit(Writing" + name + "());\n"
+            "    try {\n"
+            "      final item = await _repository.create" + name + "(create" + name + ");\n"
+            "      emit(" + name + "Created(item));\n"
+            "      emit(Write" + name + "Initial());\n"
+            "    } catch (error) {\n"
+            "      emit(Write" + name + "Error(error.toString()));\n"
+            "    }\n"
+            "  }\n"
+            "\n"
+            "  Future<void> update(String "
+            + single_name_id
+            + ", Update"
+            + name
+            + " "
+            + single_name
+            + ") async {\n"
+            "    emit(Writing" + name + "());\n"
+            "    try {\n"
+            "      final item = await _repository.update" + name + "ById("
+            + single_name_id
+            + ", "
+            + single_name
+            + ");\n"
+            "      if (item == null) {\n"
+            "        emit(Write" + name + "Error(\"" + name + " not found\"));\n"
+            "      } else {\n"
+            "        emit(" + name + "Updated(item));\n"
+            "        emit(Write" + name + "Initial());\n"
+            "      }\n"
+            "    } catch (error) {\n"
+            "      emit(Write" + name + "Error(error.toString()));\n"
+            "    }\n"
+            "  }\n"
+            "\n"
+            "  Future<void> delete(String " + single_name_id + ") async {\n"
+            "    emit(Writing" + name + "());\n"
+            "    try {\n"
+            "      final item = await _repository.delete" + name + "ById(" + single_name_id + ");\n"
+            "      if (item == null) {\n"
+            "        emit(Write" + name + "Error(\"" + name + " not found\"));\n"
+            "      } else {\n"
+            "        emit(" + name + "Deleted(item));\n"
+            "        emit(Write" + name + "Initial());\n"
+            "      }\n"
+            "    } catch (error) {\n"
+            "      emit(Write" + name + "Error(error.toString()));\n"
+            "    }\n"
+            "  }\n"
+            "}\n"
+        )
+
     return (
         "import 'package:flutter_bloc/flutter_bloc.dart';\n"
-        "import 'package:" + single_name + "_model.dart';\n"
         "\n"
-        "part 'write_" + plural_name + "_state.dart';\n"
+        + model_import
+        + repo_import
+        + "part 'write_" + plural_name + "_state.dart';\n"
         "\n"
         "class Write" + name + "Cubit extends Cubit<Write" + name + "State> {\n"
-        "  Write" + name + "Cubit() : super(Write" + name + "Initial());\n"
+        "  Write" + name + "Cubit(this._repository) : super(Write" + name + "Initial());\n"
+        "\n"
+        "  final " + name_plural + "Repository _repository;\n"
         "\n"
         "  Future<void> create(Create" + name + " create" + name + ") async {\n"
         "    emit(Writing" + name + "());\n"
-        "    // TODO: implement create\n"
+        "    try {\n"
+        "      final item = await _repository.create" + name + "(create" + name + ");\n"
+        "      emit(" + name + "Created(item));\n"
+        "      emit(Write" + name + "Initial());\n"
+        "    } catch (error) {\n"
+        "      emit(Write" + name + "Error(error.toString()));\n"
+        "    }\n"
         "  }\n"
         "\n"
         "  Future<void> update(String "
@@ -35,12 +131,36 @@ def get_write_cubit_template(singular_name: str) -> str:
         + single_name
         + ") async {\n"
         "    emit(Writing" + name + "());\n"
-        "    // TODO: implement update\n"
+        "    try {\n"
+        "      final item = await _repository.update" + name + "ById("
+        + single_name_id
+        + ", "
+        + single_name
+        + ");\n"
+        "      if (item == null) {\n"
+        "        emit(Write" + name + "Error(\"" + name + " not found\"));\n"
+        "      } else {\n"
+        "        emit(" + name + "Updated(item));\n"
+        "        emit(Write" + name + "Initial());\n"
+        "      }\n"
+        "    } catch (error) {\n"
+        "      emit(Write" + name + "Error(error.toString()));\n"
+        "    }\n"
         "  }\n"
         "\n"
         "  Future<void> delete(String " + single_name_id + ") async {\n"
         "    emit(Writing" + name + "());\n"
-        "    // TODO: implement delete\n"
+        "    try {\n"
+        "      final item = await _repository.delete" + name + "ById(" + single_name_id + ");\n"
+        "      if (item == null) {\n"
+        "        emit(Write" + name + "Error(\"" + name + " not found\"));\n"
+        "      } else {\n"
+        "        emit(" + name + "Deleted(item));\n"
+        "        emit(Write" + name + "Initial());\n"
+        "      }\n"
+        "    } catch (error) {\n"
+        "      emit(Write" + name + "Error(error.toString()));\n"
+        "    }\n"
         "  }\n"
         "}\n"
     )
@@ -65,7 +185,7 @@ def get_write_state_template(singular_name: str) -> str:
         "final class Writing" + name + " extends Write" + name + "State {}\n"
         "\n"
         "class Write" + name + "Success extends Write" + name + "State {\n"
-        "  final " + name + " item;\n"
+        "  final " + name + "InDb item;\n"
         "  Write" + name + "Success(this.item);\n"
         "}\n"
         "\n"

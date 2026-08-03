@@ -10,11 +10,14 @@ from onion.templates.dart.write_cubit_template import (
 )
 from onion.templates.dart.view_template import get_view_template
 from onion.utils.string_utils import get_entity_name_variations
+from onion.utils.dart.relative_path_util import get_relative_prefix
+from onion.utils.dart.reactive_repo_util import ensure_reactive_repository, find_package_root
 
 
 def create_flutter_module(
     input_name: str,
     output_dir: str = ".",
+    reactive: bool = False,
 ) -> None:
     variations = get_entity_name_variations(input_name)
     name = variations.single_name
@@ -32,14 +35,20 @@ def create_flutter_module(
     view_path.mkdir(parents=True, exist_ok=True)
     widgets_path.mkdir(parents=True, exist_ok=True)
 
+    import_prefix = get_relative_prefix(cubit_path, find_package_root(output_dir))
+
     read_cubit_file = cubit_path / f"read_{plural_name}_cubit.dart"
-    read_cubit_file.write_text(get_read_cubit_template(name))
+    read_cubit_file.write_text(
+        get_read_cubit_template(name, reactive, import_prefix)
+    )
 
     read_state_file = cubit_path / f"read_{plural_name}_state.dart"
     read_state_file.write_text(get_read_state_template(name))
 
     write_cubit_file = cubit_path / f"write_{plural_name}_cubit.dart"
-    write_cubit_file.write_text(get_write_cubit_template(name))
+    write_cubit_file.write_text(
+        get_write_cubit_template(name, reactive, import_prefix)
+    )
 
     write_state_file = cubit_path / f"write_{plural_name}_state.dart"
     write_state_file.write_text(get_write_state_template(name))
@@ -52,5 +61,8 @@ def create_flutter_module(
 
     widgets_init_file = widgets_path / f"{plural_name}_widgets.dart"
     widgets_init_file.write_text(f"// {name} widgets\n")
+
+    if reactive:
+        ensure_reactive_repository(output_dir)
 
     Mediator().output_folders.append(str(module_path))

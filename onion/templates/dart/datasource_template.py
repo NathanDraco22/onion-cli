@@ -15,6 +15,9 @@ def get_datasource_template(singular_name: str) -> str:
 
     return (
         "\n"
+        "import '../services/http_service.dart';\n"
+        "import '../tools/http_tool.dart';\n"
+        "\n"
         "class " + name_plural + "DataSource with HttpService {\n"
         "  " + name_plural + "DataSource._();\n"
         "  static final "

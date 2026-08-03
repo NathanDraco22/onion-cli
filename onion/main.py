@@ -1,4 +1,5 @@
 import sys
+import typer
 from typer import Typer
 from typer import Argument, Option
 from rich import print
@@ -35,6 +36,12 @@ project_app = Typer(
     help="overwrite app folder with FastAPI template"
 )
 app.add_typer(project_app, name="project")
+
+
+def resolve_reactive(reactive: bool | None) -> bool:
+    if reactive is not None:
+        return reactive
+    return typer.prompt("Use ReactiveRepository? [y/N]", default=False, type=bool)
 
 
 @project_app.command(help="create app folder from FastAPI template")
@@ -192,13 +199,19 @@ def dart(
         default="./lib/src",
         help="project directory (default: current directory)",
     ),
+    reactive: bool | None = Option(
+        default=None,
+        help="use ReactiveRepository mixin",
+    ),
 ):
     if is_plural_english(name):
         raise Exception("plural names are not allowed")
 
+    use_reactive = resolve_reactive(reactive)
+
     create_model(name, output_dir, lib_path=True)
     create_datasource(name, output_dir)
-    create_repository(name, output_dir)
+    create_repository(name, output_dir, use_reactive)
 
     print(
         "[green]dart datasource, repository and models created :heavy_check_mark:[/green]"
@@ -242,11 +255,17 @@ def dart_cubit(
         default=False,
         help="only create write cubit",
     ),
+    reactive: bool | None = Option(
+        default=None,
+        help="use ReactiveRepository mixin",
+    ),
 ):
     if is_plural_english(name):
         raise Exception("plural names are not allowed")
 
-    create_cubit(name, output_dir, read_only, write_only)
+    use_reactive = resolve_reactive(reactive)
+
+    create_cubit(name, output_dir, read_only, write_only, use_reactive)
 
     print("[green]dart cubit(s) created :heavy_check_mark:[/green]")
 
@@ -261,11 +280,17 @@ def flutter_module(
         default=".",
         help="output directory where the module folder will be created (default: current directory)",
     ),
+    reactive: bool | None = Option(
+        default=None,
+        help="use ReactiveRepository mixin",
+    ),
 ):
     if is_plural_english(name):
         raise Exception("plural names are not allowed")
 
-    create_flutter_module(name, output_dir)
+    use_reactive = resolve_reactive(reactive)
+
+    create_flutter_module(name, output_dir, use_reactive)
 
     print("[green]flutter module created :heavy_check_mark:[/green]")
 
