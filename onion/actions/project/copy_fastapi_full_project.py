@@ -116,7 +116,7 @@ def replace_in_directory(directory: Path, old: str, new: str) -> None:
 
 def rename_files_in_directory(directory: Path, old: str, new: str) -> None:
     for file_path in list(directory.rglob(f"*{old}*")):
-        if old in file_path.name and file_path.is_file():
+        if old in file_path.name and file_path.is_file() and file_path.suffix == ".py":
             new_name = file_path.name.replace(old, new)
             new_path = file_path.parent / new_name
             if not new_path.exists():

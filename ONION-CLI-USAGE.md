@@ -194,7 +194,7 @@ onion crud-mongo product --version 1
 **Generated files:** Everything from `crud` plus:
 ```
 app/services/
-├── mongo_service.py                       # Singleton MongoDB client (Motor)
+├── mongo_service.py                       # Singleton MongoDB client (PyMongo Async)
 ├── base_mongo_collection.py               # Base class with singleton pattern
 └── mongo_collections/v1/
     ├── products_collection.py             # Collection class (extends BaseMongoCollection)
@@ -204,6 +204,8 @@ app/config/
 ```
 
 The datasource is wired to use the MongoDB collection (instead of leaving NotImplementedError).
+
+The client is created lazily on first use, so `MongoService().init_service()` is only required if you want to create indexes on startup. Call `await MongoService().close()` during shutdown to release the connection pool. Configure the connection with `MONGO_URL` (default: `mongodb://localhost:27017`).
 
 **Number of files created:** 10
 
@@ -252,7 +254,7 @@ Singleton with `get_instance()`. Calls the datasource and validates results into
 
 Extends `BaseMongoCollection` which provides:
 - Singleton pattern via `get_instance()` classmethod
-- `self._collection` — the Motor collection instance
+- `self._collection` — the PyMongo Async collection instance
 
 The generated class only defines `collection_name` and CRUD methods:
 ```python

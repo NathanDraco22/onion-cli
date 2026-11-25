@@ -108,10 +108,12 @@ onion crud-mongo <NAME> [<NAME> ...] --version <VERSION>
 ```
 
 Generates everything from `crud` plus:
-- `app/services/mongo_service.py`
+- `app/services/mongo_service.py` (PyMongo Async)
 - `app/services/base_mongo_collection.py`
 - `app/services/mongo_collections/v{version}/{plural_name}_collection.py`
 - `app/config/onion-config.toml`
+
+Set `MONGO_URL` in your environment (default: `mongodb://localhost:27017`). The generated `MongoService` creates the client lazily and exposes `close()` for shutdown.
 
 | Argument/Option | Description |
 |---|---|

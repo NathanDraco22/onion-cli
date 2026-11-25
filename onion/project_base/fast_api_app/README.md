@@ -25,6 +25,18 @@ pip install uv
 uv sync
 ```
 
+### 3. MongoDB (optional)
+
+This template uses **PyMongo Async** (`AsyncMongoClient` and `AsyncCollection`) instead of Motor.
+Configure the connection in your `.env` file:
+
+```env
+MONGO_URL=mongodb://localhost:27017
+```
+
+`MongoService` is created lazily on first use. If you want to create indexes on startup, call `MongoService().init_service()` from `app/core/services_initializer.py`.
+The `onion crud-mongo <entity-name> --version <version>` command generates the collections for your entities.
+
 ## ⚙️ Using the CLI (`onion`)
 The core of this template is the custom `onion` CLI that automates the generation of your modules and other project components.
 
@@ -95,7 +107,7 @@ Holds entity-specific logic, with a dedicated folder per entity (e.g., repos/v1/
 Contains Pydantic models for API responses, which may differ from internal data models. These models can also be versioned.
 
 - `services/`  
-Dedicated to accessing external services like databases (e.g., MongoService), Redis, or third-party APIs (e.g., PaypalService). This outermost layer handles external interactions.
+Dedicated to accessing external services like databases (e.g., `MongoService` with PyMongo Async), Redis, or third-party APIs (e.g., PaypalService). This outermost layer handles external interactions.
 
 - `tools/`  
 Contains general-purpose utilities and support tools that are not core business features, such as date helpers, format converters, or other auxiliary classes.

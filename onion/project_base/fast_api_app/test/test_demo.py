@@ -1,12 +1,10 @@
-import pytest
-from app.datasource.v1.my_datasource import MyDatasource
+from fastapi.testclient import TestClient
+
+from main import app
 
 
-def test_demo():
-    assert (2+2) == 4
+def test_openapi() -> None:
+    with TestClient(app) as client:
+        response = client.get("/openapi.json")
 
-
-@pytest.mark.asyncio
-async def test_my_datasource():
-    my_ds = MyDatasource()
-    assert (await my_ds.get_data()) == "Hello, World"
+    assert response.status_code == 200

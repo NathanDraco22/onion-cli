@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "onion"
-version = "0.6.0"
+version = "0.7.0"
 description = "A CLI tool for generate code in onion template"
+requires-python = ">=3.10"
 dependencies = [
     "typer>=0.16.0", 
     "toml>=0.10.2",
