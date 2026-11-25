@@ -27,7 +27,7 @@ uv sync
 
 ### 3. MongoDB (optional)
 
-This template uses **PyMongo Async** (`AsyncMongoClient` and `AsyncCollection`) instead of Motor.
+This template uses **PyMongo Async** (`AsyncMongoClient` and `AsyncCollection`).
 Configure the connection in your `.env` file:
 
 ```env
