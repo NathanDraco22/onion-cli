@@ -1,0 +1,1 @@
+include onion/project_base/fast_api_app/app/.env.example
