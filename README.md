@@ -221,7 +221,7 @@ Creates cubit + state files for Flutter Bloc state management.
 onion dart-cubit <NAME> --output-dir "lib/src/cubits" --read-only --write-only
 ```
 
-Generates (inside `{output_dir}/{name}_cubit/`):
+Generates (inside `{output_dir}/{plural_name}/`):
 - `read_{plural_name}_cubit.dart` — with `mark{Name}Created` (puts item first + tracks in newItems), `mark{Name}Updated`, and `mark{Name}Deleted`
 - `read_{plural_name}_state.dart` — `Read{Name}Success` with `items`, `newItems`, `updatedItems`, `deletedItems`
 - `write_{plural_name}_cubit.dart` + `write_{plural_name}_state.dart`
@@ -230,6 +230,7 @@ Generates (inside `{output_dir}/{name}_cubit/`):
 |---|---|
 | `--read-only` | Generate only read cubit |
 | `--write-only` | Generate only write cubit |
+| `--business-package` | Use `package:{name}/{name}.dart` for models and repositories |
 
 #### `onion dart-view`
 
@@ -239,34 +240,45 @@ Creates a **single view screen** for Flutter (StatelessWidget).
 onion dart-view <NAME> --output-dir "."
 ```
 
-Generates `{output_dir}/{plural_name}_view.dart` with:
+Generates `{output_dir}/{plural_name}_screen.dart` with:
 - `{Name_plural}Screen` (public)
 - `_RootScaffold` (private)
 - `_Body` (private)
+
+With `--responsive`, generates `mobile/`, `tablet/`, `desktop/` parts and
+`lib/src/tools/extensiones.dart` if missing.
 
 | Argument/Option | Default | Description |
 |---|---|---|
 | `NAME` | | Entity name in singular |
 | `--output-dir` | `.` | Output directory |
+| `--responsive` | `false` | Generate mobile/tablet/desktop variants |
 
 #### `onion flutter-module`
 
 Creates a **complete Flutter feature module** with cubits, dialogs, view, and widgets.
 
 ```bash
-onion flutter-module <NAME> --output-dir "."
+onion flutter-module <NAME> --output-dir "lib/src/modules" --responsive --business-package catalog_business
 ```
 
 Generates `{output_dir}/{plural_name}/` with:
-- `cubit/` (read + write cubit and state)
+- `view/{plural_name}_screen.dart` (`{Name_plural}Screen` + `MultiBlocProvider`)
 - `dialogs/` (stub file)
-- `view/` (`{Name_plural}Screen` StatelessWidget)
 - `widgets/` (stub file)
+
+The cubits are generated in `lib/src/cubits/{plural_name}/` (outside the
+module):
+- `read_{plural_name}_cubit.dart` + state
+- `write_{plural_name}_cubit.dart` + state
 
 | Argument/Option | Default | Description |
 |---|---|---|
 | `NAME` | | Entity name in singular |
 | `--output-dir` | `.` | Directory where the module folder will be created (not the project root) |
+| `--responsive` | `false` | Generate mobile/tablet/desktop variants |
+| `--business-package` | none | Import models/repositories from `package:{name}/{name}.dart` |
+| `--reactive` / `--no-reactive` | prompt | Use the ReactiveRepository mixin |
 
 #### `onion barrel`
 

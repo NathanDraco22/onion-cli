@@ -5,6 +5,7 @@ def get_write_cubit_template(
     singular_name: str,
     reactive: bool = False,
     import_prefix: str = "../../",
+    business_package: str | None = None,
 ) -> str:
     if not singular_name or not isinstance(singular_name, str):
         raise ValueError("name is not a valid string")
@@ -34,12 +35,24 @@ def get_write_cubit_template(
         + "_repository.dart';\n"
     )
 
-    if reactive:
-        return (
+    if business_package:
+        base_imports = (
+            "import 'package:flutter_bloc/flutter_bloc.dart';\n"
+            "\n"
+            f"import 'package:{business_package}/{business_package}.dart';\n"
+        )
+    else:
+        base_imports = (
             "import 'package:flutter_bloc/flutter_bloc.dart';\n"
             "\n"
             + model_import
             + repo_import
+        )
+
+    if reactive:
+        return (
+            base_imports
+            + "\n"
             + "part 'write_" + plural_name + "_state.dart';\n"
             "\n"
             "class Write" + name + "Cubit extends Cubit<Write" + name + "State> {\n"
@@ -101,10 +114,8 @@ def get_write_cubit_template(
         )
 
     return (
-        "import 'package:flutter_bloc/flutter_bloc.dart';\n"
-        "\n"
-        + model_import
-        + repo_import
+        base_imports
+        + "\n"
         + "part 'write_" + plural_name + "_state.dart';\n"
         "\n"
         "class Write" + name + "Cubit extends Cubit<Write" + name + "State> {\n"

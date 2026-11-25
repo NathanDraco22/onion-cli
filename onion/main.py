@@ -259,13 +259,24 @@ def dart_cubit(
         default=None,
         help="use ReactiveRepository mixin",
     ),
+    business_package: str | None = Option(
+        default=None,
+        help="Dart package with models/repositories (e.g., catalog_business)",
+    ),
 ):
     if is_plural_english(name):
         raise Exception("plural names are not allowed")
 
     use_reactive = resolve_reactive(reactive)
 
-    create_cubit(name, output_dir, read_only, write_only, use_reactive)
+    create_cubit(
+        name,
+        output_dir,
+        read_only,
+        write_only,
+        use_reactive,
+        business_package,
+    )
 
     print("[green]dart cubit(s) created :heavy_check_mark:[/green]")
 
@@ -284,13 +295,27 @@ def flutter_module(
         default=None,
         help="use ReactiveRepository mixin",
     ),
+    responsive: bool = Option(
+        default=False,
+        help="generate mobile/tablet/desktop screen variants",
+    ),
+    business_package: str | None = Option(
+        default=None,
+        help="Dart package with models/repositories (e.g., catalog_business)",
+    ),
 ):
     if is_plural_english(name):
         raise Exception("plural names are not allowed")
 
     use_reactive = resolve_reactive(reactive)
 
-    create_flutter_module(name, output_dir, use_reactive)
+    create_flutter_module(
+        name,
+        output_dir,
+        use_reactive,
+        responsive,
+        business_package,
+    )
 
     print("[green]flutter module created :heavy_check_mark:[/green]")
 
@@ -305,11 +330,15 @@ def dart_view(
         default=".",
         help="output directory (default: current directory)",
     ),
+    responsive: bool = Option(
+        default=False,
+        help="generate mobile/tablet/desktop screen variants",
+    ),
 ):
     if is_plural_english(name):
         raise Exception("plural names are not allowed")
 
-    create_view(name, output_dir)
+    create_view(name, output_dir, responsive=responsive)
 
     print("[green]dart view created :heavy_check_mark:[/green]")
 

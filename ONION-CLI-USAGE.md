@@ -355,6 +355,9 @@ Creates cubit + state files for Flutter Bloc state management.
 # Create both read and write cubits (default):
 onion dart-cubit product
 
+# Separate business package (imports use its barrel):
+onion dart-cubit product --business-package catalog_business
+
 # Read-only:
 onion dart-cubit product --read-only
 
@@ -362,11 +365,17 @@ onion dart-cubit product --read-only
 onion dart-cubit product --write-only
 ```
 
-**Generated:** `{output_dir}/{name}_cubit/` with:
+**Generated:** `{output_dir}/{plural_name}/` with:
 - `read_{plural_name}_cubit.dart` + `read_{plural_name}_state.dart`
 - `write_{plural_name}_cubit.dart` + `write_{plural_name}_state.dart`
 
-**Default `--output-dir`:** `lib/src/cubits` (generates in `lib/src/cubits/{name}_cubit/`)
+**Default `--output-dir`:** `lib/src/cubits` (generates in `lib/src/cubits/{plural_name}/`)
+
+| Option | Default | Description |
+|---|---|---|
+| `--read-only` | `false` | Generate only the read cubit |
+| `--write-only` | `false` | Generate only the write cubit |
+| `--business-package` | none | Use `package:{name}/{name}.dart` for models and repositories |
 
 **States (Read):** `ReadProductInitial`, `ReadProductLoading`, `ReadProductSuccess` (with lists for items/new/updated/deleted), `ReadProductRefreshing` (with `factory fromSuccess`), `ReadProductError`.
 
@@ -379,18 +388,28 @@ onion dart-cubit product --write-only
 Creates a single view screen file for Flutter.
 
 ```bash
-onion dart-view product --output-dir "./lib/src"
+onion dart-view product --output-dir "./lib/src/modules/products/view"
+
+# Responsive variants (mobile/tablet/desktop):
+onion dart-view product --output-dir "./lib/src/modules/products/view" --responsive
 ```
 
-**Generated:** `{output_dir}/{plural_name}_view.dart` with 3 classes:
+**Generated:** `{output_dir}/{plural_name}_screen.dart` with 3 classes:
 - `{Name_plural}Screen` — public StatelessWidget
 - `_RootScaffold` — private scaffold
 - `_Body` — private body with centered text
+
+With `--responsive`, also generates:
+- `{output_dir}/mobile/{plural_name}_screen_mobile.dart`
+- `{output_dir}/tablet/{plural_name}_screen_tablet.dart`
+- `{output_dir}/desktop/{plural_name}_screen_desktop.dart`
+- `lib/src/tools/extensiones.dart` if it does not exist
 
 | Argument/Option | Default | Description |
 |---|---|---|
 | `NAME` | | Entity name in singular |
 | `--output-dir` | `.` | Output directory |
+| `--responsive` | `false` | Generate mobile/tablet/desktop parts and the breakpoint dispatch |
 
 ### `onion flutter-module`
 
@@ -400,28 +419,41 @@ Creates a complete feature module folder structure.
 # Module created inside ./products/ (default output-dir = .):
 onion flutter-module product
 
-# Recommended: specify a target directory:
-onion flutter-module operative-expense --output-dir lib/src/modules
+# Recommended: specify a target directory and the business package:
+onion flutter-module product \
+  --output-dir lib/src/modules \
+  --business-package catalog_business \
+  --responsive
 ```
 
 **Generated:** `{output_dir}/{plural_name}/` with:
 ```
-cubit/
-├── read_{plural_name}_cubit.dart
-├── read_{plural_name}_state.dart
-├── write_{plural_name}_cubit.dart
-└── write_{plural_name}_state.dart
-dialogs/{plural_name}_dialogs.dart      # Stub
-view/{plural_name}_view.dart            # {Name_plural}Screen (StatelessWidget)
-widgets/{plural_name}_widgets.dart      # Stub
+view/{plural_name}_screen.dart       # {Name_plural}Screen + MultiBlocProvider
+dialogs/{plural_name}_dialogs.dart   # Stub
+widgets/{plural_name}_widgets.dart   # Stub
+```
+
+The cubits are generated **outside the module**, in
+`lib/src/cubits/{plural_name}/`:
+```
+read_{plural_name}_cubit.dart
+read_{plural_name}_state.dart
+write_{plural_name}_cubit.dart
+write_{plural_name}_state.dart
 ```
 
 | Argument/Option | Default | Description |
 |---|---|---|
 | `NAME` | | Entity name in singular |
 | `--output-dir` | `.` | Directory where the module folder will be created (not the project root) |
+| `--responsive` | `false` | Generate mobile/tablet/desktop parts and the breakpoint dispatch |
+| `--business-package` | none | Import models/repositories from `package:{name}/{name}.dart` |
+| `--reactive` / `--no-reactive` | prompt | Use the ReactiveRepository mixin |
 
-**Number of files created:** 6
+The command reads the app package name from `pubspec.yaml`; run it from the
+Flutter app root or a path inside it.
+
+**Number of files created:** 7 (10 with `--responsive`).
 
 ### `onion barrel`
 
@@ -556,6 +588,6 @@ onion router supplier --version 1
 | `dart` | 5 | Dart Data Layer |
 | `dart-model` | 1 | Dart Model |
 | `dart-cubit` | 4 | Dart State |
-| `dart-view` | 1 | Dart View |
-| `flutter-module` | 6 | Dart Module |
+| `dart-view` | 1 (4 with `--responsive`) | Dart View |
+| `flutter-module` | 7 (10 with `--responsive`) | Dart Module |
 | `barrel` | 1 | Utility |

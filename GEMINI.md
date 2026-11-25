@@ -1,5 +1,13 @@
 # Contexto de Conversación con Gemini
 
+## v0.8.0 — Flutter responsive y alcance de cubits
+
+- **`dart-cubit`**: genera `{output_dir}/{plural_name}/` (antes `{name}_cubit/`); nuevo flag `--business-package` para importar `package:{name}/{name}.dart`.
+- **`dart-view`**: genera `{plural_name}_screen.dart` (antes `_view.dart`); nuevo flag `--responsive` con variantes `mobile/`, `tablet/`, `desktop/` y `extensiones.dart`.
+- **`flutter-module`**: los cubits van a `lib/src/cubits/{plural_name}/` (fuera del módulo); el screen queda en `view/{plural_name}_screen.dart` con `MultiBlocProvider`; flags `--responsive` y `--business-package`.
+- **Tests**: `test/test_dart_generators.py` con pytest; `testpaths = ["test"]` para no recolectar el template FastAPI.
+- **Versión**: `0.7.3` → `0.8.0`.
+
 ## Comando Agregado: `onion dart-service`
 
 Se ha implementado el comando `onion dart-service` en la CLI de `onion-cli` para facilitar la creación de servicios de infraestructura `http` y `hive` en proyectos Dart/Flutter.

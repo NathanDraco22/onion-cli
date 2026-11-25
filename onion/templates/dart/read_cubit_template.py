@@ -5,6 +5,7 @@ def get_read_cubit_template(
     singular_name: str,
     reactive: bool = False,
     import_prefix: str = "../../",
+    business_package: str | None = None,
 ) -> str:
     if not singular_name or not isinstance(singular_name, str):
         raise ValueError("name is not a valid string")
@@ -34,19 +35,36 @@ def get_read_cubit_template(
         + "_repository.dart';\n"
     )
 
-    if reactive:
-        return (
-            "import 'dart:async';\n"
+    if business_package:
+        base_imports = (
+            "import 'package:flutter_bloc/flutter_bloc.dart';\n"
             "\n"
+            f"import 'package:{business_package}/{business_package}.dart';\n"
+        )
+        if reactive:
+            base_imports = "import 'dart:async';\n\n" + base_imports
+    else:
+        base_imports = (
             "import 'package:flutter_bloc/flutter_bloc.dart';\n"
             "\n"
             + model_import
             + repo_import
-            + "import '"
-            + import_prefix
-            + "tools/reactive_repo/reactive_repository.dart';\n"
-            "\n"
-            "part 'read_" + plural_name + "_state.dart';\n"
+        )
+        if reactive:
+            base_imports = (
+                "import 'dart:async';\n"
+                "\n"
+                + base_imports
+                + "import '"
+                + import_prefix
+                + "tools/reactive_repo/reactive_repository.dart';\n"
+            )
+
+    if reactive:
+        return (
+            base_imports
+            + "\n"
+            + "part 'read_" + plural_name + "_state.dart';\n"
             "\n"
             "class Read" + name + "Cubit extends Cubit<Read" + name + "State> {\n"
             "  Read" + name + "Cubit(this._repository) : super(Read" + name + "Initial()) {\n"
@@ -137,10 +155,8 @@ def get_read_cubit_template(
         )
 
     return (
-        "import 'package:flutter_bloc/flutter_bloc.dart';\n"
-        "\n"
-        + model_import
-        + repo_import
+        base_imports
+        + "\n"
         + "part 'read_" + plural_name + "_state.dart';\n"
         "\n"
         "class Read" + name + "Cubit extends Cubit<Read" + name + "State> {\n"

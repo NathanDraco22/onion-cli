@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "onion"
-version = "0.7.3"
+version = "0.8.0"
 description = "A CLI tool for generate code in onion template"
 requires-python = ">=3.10"
 dependencies = [
@@ -18,7 +18,11 @@ onion = "onion.main:app"
 [dependency-groups]
 dev = [
     "ty>=0.0.31",
+    "pytest>=8.0.0",
 ]
 
 [tool.ty.src]
 exclude = ["onion/project_base"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
