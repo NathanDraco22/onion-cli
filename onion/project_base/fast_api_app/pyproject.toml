@@ -24,3 +24,16 @@ onion = { git = "https://github.com/NathanDraco22/onion-cli.git" }
 
 [tool.pytest.ini_options]
 pythonpath = ["app"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "api",
+    "app_lifespan",
+    "core",
+    "main",
+    "repos",
+    "responses",
+    "services",
+    "tools",
+]

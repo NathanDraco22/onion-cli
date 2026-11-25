@@ -8,7 +8,7 @@ def copy_fastapi_project(
     output_dir: str,
     force: bool = False,
 ) -> None:
-    base_path = Path("onion/project_base/fast_api_app")
+    base_path = Path(__file__).resolve().parents[2] / "project_base" / "fast_api_app"
     output_path = Path(output_dir)
 
     app_base_path = base_path / "app"

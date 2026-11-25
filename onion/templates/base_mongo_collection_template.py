@@ -1,11 +1,8 @@
 from string import Template
 
-base_mongo_collection_template = Template("""from typing import TypeVar
+base_mongo_collection_template = Template("""from typing import Self
 
 from services.mongo_service import MongoService
-
-
-T = TypeVar("T", bound="BaseMongoCollection")
 
 
 class BaseMongoCollection:
@@ -17,7 +14,7 @@ class BaseMongoCollection:
         self._collection = mongo_service.get_collection(self.collection_name)
 
     @classmethod
-    def get_instance(cls: type[T]) -> T:
+    def get_instance(cls) -> Self:
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance  # type: ignore
